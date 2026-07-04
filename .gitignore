@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+backend/venv/
+.env
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/.npm/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# ML Data & Models
+ml_pipeline/data/
+*.pth
+*.pt
+*.onnx
+*.npy
+output/
+
+node_modules/
+build/
+dist/
+.env
+__pycache__/
+*.pyc
+.vscode/
+.DS_Store
