@@ -1,55 +1,56 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
-// Public Pages
-import LandingPage from './components/LandingPage';
-import LoginPage from './components/LoginPage';
-import RegisterPage from './components/RegisterPage';
-import ForgotPasswordPage from './components/ForgotPasswordPage';
-import NotFoundPage from './components/NotFoundPage';
-
-// Secure Pages
-import Dashboard from './components/Dashboard';
-import ProfilePage from './components/ProfilePage';
-import SettingsPage from './components/SettingsPage';
-import InteractiveMap from './components/InteractiveMap';
-import HistoryPage from './components/HistoryPage';
-import UploadPage from './components/UploadPage';
-import AnalyticsPage from './components/AnalyticsPage';
-import DatasetsPage from './components/DatasetsPage';
-import ResultsDashboard from './components/ResultsDashboard';
-import AnalysisDetails from './components/AnalysisDetails';
-import HelpPage from './components/HelpPage';
-
-// Layout
+// Import Layout
 import MainLayout from './components/MainLayout';
+
+// Import Pages
+import Dashboard from './components/Dashboard';
+import UploadPage from './components/UploadPage';
+import InteractiveMap from './components/InteractiveMap';
+import AnalyticsPage from './components/AnalyticsPage';
+import HistoryPage from './components/HistoryPage';
+import ReportsPage from './components/ReportsPage';
+import SettingsPage from './components/SettingsPage';
+import DatasetsPage from './components/DatasetsPage';
+
+// Placeholder for incomplete pages so the app doesn't crash
+const PlaceholderPage = ({ title }) => (
+  <div style={{ padding: '40px', textAlign: 'center', fontFamily: 'Arial, sans-serif', color: '#5B685F' }}>
+    <h1 style={{ color: '#123D30' }}>{title}</h1>
+    <p>This module is currently under construction.</p>
+  </div>
+);
 
 function App() {
   return (
     <Router>
-      <Routes>
-        {/* PUBLIC ROUTES */}
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        
-        {/* SECURE ROUTES (Wrapped in MainLayout Sidebar) */}
-        <Route path="/dashboard" element={<MainLayout><Dashboard /></MainLayout>} />
-        <Route path="/profile" element={<MainLayout><ProfilePage /></MainLayout>} />
-        <Route path="/settings" element={<MainLayout><SettingsPage /></MainLayout>} />
-        <Route path="/map" element={<MainLayout><InteractiveMap /></MainLayout>} />
-        <Route path="/history" element={<MainLayout><HistoryPage /></MainLayout>} />
-        <Route path="/upload" element={<MainLayout><UploadPage /></MainLayout>} />
-        <Route path="/analytics" element={<MainLayout><AnalyticsPage /></MainLayout>} />
-        <Route path="/datasets" element={<MainLayout><DatasetsPage /></MainLayout>} />
-        <Route path="/results" element={<MainLayout><ResultsDashboard /></MainLayout>} />
-        <Route path="/details" element={<MainLayout><AnalysisDetails /></MainLayout>} />
-        <Route path="/help" element={<MainLayout><HelpPage /></MainLayout>} />
-        
-        {/* CATCH-ALL 404 ROUTE */}
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+      <MainLayout>
+        <Routes>
+          {/* Redirect root to dashboard */}
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          
+          {/* Core Application Routes */}
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/upload" element={<UploadPage />} />
+          <Route path="/map" element={<InteractiveMap />} />
+          <Route path="/analytics" element={<AnalyticsPage />} />
+          <Route path="/history" element={<HistoryPage />} />
+          
+          {/* Our newly created Reports Page */}
+          <Route path="/reports" element={<ReportsPage />} />
+          
+          {/* Settings Page */}
+          <Route path="/settings" element={<SettingsPage />} />
+
+          {/* Placeholder Routes for Phase 2 */}
+          <Route path="/datasets" element={<DatasetsPage />} />
+          <Route path="/profile" element={<PlaceholderPage title="User Profile" />} />
+          
+          {/* Catch-all for 404s */}
+          <Route path="*" element={<PlaceholderPage title="404 - Page Not Found" />} />
+        </Routes>
+      </MainLayout>
     </Router>
   );
 }

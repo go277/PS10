@@ -18,8 +18,28 @@ export default function Dashboard() {
   }, []);
 
   const loadHistory = async () => {
-    const data = await getHistory();
-    setHistory(data);
+    try {
+      const data = await getHistory();
+      
+      // 1. THE BULLETPROOF VEST: Force it to be an array so React NEVER crashes
+      let historyArray = [];
+      if (Array.isArray(data)) historyArray = data;
+      else if (data && Array.isArray(data.data)) historyArray = data.data;
+      else if (data && Array.isArray(data.history)) historyArray = data.history;
+
+      // 2. THE TRANSLATOR: Make sure the Python variables perfectly match your React table
+      const formattedHistory = historyArray.map(log => ({
+        ...log,
+        vegetation_percent: log.vegetation_pct || log.vegetation_percent,
+        water_percent: log.water_pct || log.water_percent,
+        processing_time_sec: log.processing_time ? log.processing_time.replace('s', '') : log.processing_time_sec
+      }));
+
+      setHistory(formattedHistory);
+    } catch (err) {
+      console.error("Failed to load history:", err);
+      setHistory([]); // If the API fails, default to an empty array so the page stays alive!
+    }
   };
 
   const handleProcessFile = async (file) => {

@@ -10,8 +10,11 @@ class UNetDown(nn.Module):
     def __init__(self, in_size, out_size, normalize=True, dropout=0.0):
         super(UNetDown, self).__init__()
         layers = [nn.Conv2d(in_size, out_size, kernel_size=4, stride=2, padding=1, bias=False)]
+        
+        # FIX: Swapped BatchNorm for InstanceNorm to prevent .eval() mode collapse
         if normalize:
-            layers.append(nn.BatchNorm2d(out_size))
+            layers.append(nn.InstanceNorm2d(out_size, affine=True))
+            
         layers.append(nn.LeakyReLU(0.2))
         if dropout:
             layers.append(nn.Dropout(dropout))
@@ -26,7 +29,8 @@ class UNetUp(nn.Module):
         super(UNetUp, self).__init__()
         layers = [
             nn.ConvTranspose2d(in_size, out_size, kernel_size=4, stride=2, padding=1, bias=False),
-            nn.BatchNorm2d(out_size),
+            # FIX: Swapped BatchNorm for InstanceNorm
+            nn.InstanceNorm2d(out_size, affine=True),
             nn.ReLU(inplace=True)
         ]
         if dropout:
@@ -35,7 +39,7 @@ class UNetUp(nn.Module):
 
     def forward(self, x, skip_input):
         x = self.model(x)
-        # Skip Connection: glues the high-res structural details back into the painted image
+        # Correct logic: Upsample first, then concatenate with skip_input
         x = torch.cat((x, skip_input), 1)
         return x
 

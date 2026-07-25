@@ -1,8 +1,14 @@
+import os
+import datetime
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, Float
 from sqlalchemy.orm import declarative_base, sessionmaker
-import datetime
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./isro_pipeline.db"
+# --- THE GHOST BUG FIX: ABSOLUTE PATH ---
+# This forces the database to ALWAYS be in the exact same folder as this file.
+# No more silent duplicates if the terminal is in the wrong folder!
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "isro_pipeline.db")
+SQLALCHEMY_DATABASE_URL = f"sqlite:///{DB_PATH}"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
@@ -22,7 +28,7 @@ class AnalysisLog(Base):
     # Phase 9 Analytics Columns
     water_percent = Column(Float, nullable=True)
     vegetation_percent = Column(Float, nullable=True)
-    total_buildings = Column(Integer, nullable=True)
+    total_buildings = Column(Float, nullable=True) # Set to Float for safe percentage saving
     road_length_km = Column(Float, nullable=True)
     
     timestamp = Column(DateTime, default=datetime.datetime.utcnow)

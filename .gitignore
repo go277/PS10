@@ -30,3 +30,17 @@ __pycache__/
 *.pyc
 .vscode/
 .DS_Store
+
+weights/
+data/
+raw_maps/
+*.pth
+*.npy
+*.geotiff
+*.tif
+
+
+# Virtual Environments
+.venv_ai/
+venv/
+env/
